@@ -16,10 +16,13 @@
 
 :root{--navy:#2D406F;--royal:#0362AF;--indigo:#4F57A0;--sky:#55A0D6;--light:#87C2E6;--pale:#B0D6EE;--ice:#CAE6F7;--white:#F8FBFC;--pink:#E8A9C8;--ink:#1F2A44}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#16264a;overflow:hidden}
-#wrap{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%)}
-#stage{position:absolute;inset:0;overflow:hidden;font-family:'Kanit',sans-serif;color:var(--navy);
+html,body{margin:0;height:100%;background:#E5EFF7;overflow:hidden}
+/* #wrap = ผืนพื้นหลังเต็มจอ (ขยายตามอุปกรณ์) · #stage = เนื้อหาขนาดคงที่ 1920×1080 / 1080×1920 อยู่กลางจอ */
+#wrap{position:absolute;left:0;top:0;width:100vw;height:100vh;transform-origin:0 0;overflow:hidden;
   background:linear-gradient(180deg,#C6E3F6 0%,#E5EFF7 46%,#F8FBFC 100%)}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;font-family:'Kanit',sans-serif;color:var(--navy)}
+#fcoins{position:absolute;left:0;top:0}
+#tpw{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;z-index:50;pointer-events:none}
 .abs{position:absolute}
 .cx{position:absolute;left:0;right:0;text-align:center}
 .scene{position:absolute;inset:0;visibility:hidden}
@@ -179,7 +182,7 @@ body.recording #secPop{display:none!important}
 #grid{left:0;bottom:0;width:100%;height:380px}
 #skyline,#swoosh{width:100%}
 /* ---- portrait (1080×1920) ---- */
-body.portrait #wrap{width:1080px;height:1920px}
+body.portrait #stage,body.portrait #tpw{width:1080px;height:1920px}
 .portrait #grid{height:560px}
 .portrait #skyline{bottom:240px;height:640px}
 .portrait #swoosh{height:600px}
@@ -347,7 +350,20 @@ window.MYSALE_CONFIG = {
   LINE_QR_FILE: 'line-qr.png'
 };
 </script>
-<div id="wrap"><div id="stage">
+<div id="wrap">
+<!-- ===== background ===== -->
+<div id="bg" class="abs" style="inset:0">
+ <div id="glowA" class="abs"></div><div id="glowB" class="abs"></div>
+ <svg id="skyline" class="abs" viewBox="0 0 1920 520"></svg>
+ <svg id="grid" class="abs"></svg>
+ <svg id="swoosh" class="abs" viewBox="0 0 1920 420" preserveAspectRatio="none">
+  <defs><linearGradient id="sw1" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/></linearGradient></defs>
+  <path id="swPath" d="M0 330 C 500 300 900 250 1300 170 C 1560 120 1760 120 1920 90" fill="none" stroke="url(#sw1)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M0 350 C 500 320 900 270 1300 190 C 1560 140 1760 140 1920 110" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
+ </svg>
+ <div id="fcoins"></div>
+</div>
+<div id="stage">
 
 <!-- ===== shared defs ===== -->
 <svg width="0" height="0" style="position:absolute">
@@ -389,19 +405,6 @@ window.MYSALE_CONFIG = {
    <path d="M27 37a10 10 0 0 0 14 0l9-9a10 10 0 0 0-14-14l-3 3"/><path d="M37 27a10 10 0 0 0-14 0l-9 9a10 10 0 0 0 14 14l3-3"/></g></symbol>
  </defs>
 </svg>
-
-<!-- ===== background ===== -->
-<div id="bg" class="abs" style="inset:0">
- <div id="glowA" class="abs"></div><div id="glowB" class="abs"></div>
- <svg id="skyline" class="abs" viewBox="0 0 1920 520"></svg>
- <svg id="grid" class="abs"></svg>
- <svg id="swoosh" class="abs" viewBox="0 0 1920 420" preserveAspectRatio="none">
-  <defs><linearGradient id="sw1" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/></linearGradient></defs>
-  <path id="swPath" d="M0 330 C 500 300 900 250 1300 170 C 1560 120 1760 120 1920 90" fill="none" stroke="url(#sw1)" stroke-width="10" stroke-linecap="round"/>
-  <path d="M0 350 C 500 320 900 270 1300 190 C 1560 140 1760 140 1920 110" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3"/>
- </svg>
- <div id="fcoins"></div>
-</div>
 
 <!-- ===== SCENE 1: intro ===== -->
 <div class="scene" id="s1">
@@ -558,12 +561,14 @@ window.MYSALE_CONFIG = {
  </div>
 </div>
 
+</div>
 <!-- transition panels -->
+<div id="tpw">
 <div class="tpanel" id="tp1" style="background:linear-gradient(90deg,#87C2E6,#55A0D6)"></div>
 <div class="tpanel" id="tp2" style="background:linear-gradient(90deg,#0362AF,#4F57A0)"></div>
 <div class="tpanel" id="tp3" style="background:linear-gradient(90deg,#F8FBFC,#CAE6F7)"></div>
-
-</div></div>
+</div>
+</div>
 <div id="ctrl" role="toolbar" aria-label="ควบคุมการนำเสนอ">
  <button id="bPrev" aria-label="ส่วนก่อนหน้า" title="ส่วนก่อนหน้า (←)"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
  <button id="bPlay" aria-label="หยุดชั่วคราว" title="เล่น / หยุด (Space)"><svg viewBox="0 0 24 24" id="icPause"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg><svg viewBox="0 0 24 24" id="icPlay" style="display:none"><path d="M7 4.5v15L19.5 12z"/></svg></button>
@@ -2907,8 +2912,13 @@ const PORT=ORI==='portrait'||(ORI==='auto'&&autoPort());
 const SW=PORT?1080:1920,SH=PORT?1920:1080;
 document.body.classList.toggle('portrait',PORT);
 /* ---------- fit to window ---------- */
-function fit(){const W=innerWidth;const s=Math.min(W/SW,innerHeight/SH);
-  const w=$('#wrap');w.style.left=(W/2)+'px';w.style.transform=`translate(-50%,-50%) scale(${s})`}
+function fit(){const W=innerWidth,H=innerHeight,s=Math.min(W/SW,H/SH);
+  const cw=W/s,ch=H/s,ox=(cw-SW)/2,oy=(ch-SH)/2; // ขนาดผืนพื้นหลัง (หน่วยเดียวกับเนื้อหา) และระยะเยื้องของเนื้อหา
+  const w=$('#wrap');w.style.width=cw+'px';w.style.height=ch+'px';w.style.transform=`scale(${s})`;
+  for(const id of ['#stage','#fcoins']){const el=$(id);el.style.left=ox+'px';el.style.top=oy+'px'}
+  $('#tpw').style.transform=`scale(${cw/SW},${ch/SH})`;
+  $('#skyline').setAttribute('viewBox',`${-ox} 0 ${cw} 520`);
+  $('#grid').setAttribute('viewBox',`${-ox} 0 ${cw} ${PORT?560:380}`)}
 addEventListener('resize',()=>{fit();
   if(ORI==='auto'&&autoPort()!==PORT&&!QS.has('capture')){clearTimeout(fit.r);fit.r=setTimeout(()=>{if(autoPort()!==PORT)reloadAt(window.__curSec||0)},400)}});
 fit();
@@ -2933,20 +2943,21 @@ addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];i
 (function skyline(){
   let h='<defs><linearGradient id="bld" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#A9CBEA"/><stop offset="1" stop-color="#D9EAF7"/></linearGradient>'+
         '<linearGradient id="bld2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#C3DCF1"/><stop offset="1" stop-color="#E6F1FA"/></linearGradient></defs>';
-  const layer=(fill,op,hmul,cnt)=>{let x=-20,s='';while(x<SW+20){const w=40+rnd()*70;
+  const layer=(fill,op,hmul,cnt)=>{let x=-SW*1.5,s='';while(x<SW*2.5){const w=40+rnd()*70;
       const edge=Math.min(x,SW-x);const lim=PORT?300:520;const k=edge<lim?1:(PORT?.55:.38);const hh=(120+rnd()*300)*k*hmul;
       s+=`<rect x="${x.toFixed(0)}" y="${(520-hh).toFixed(0)}" width="${w.toFixed(0)}" height="${hh.toFixed(0)}" fill="${fill}" opacity="${op}"/>`;
       if(rnd()>.8&&k===1){s+=`<rect x="${(x+w/2-3).toFixed(0)}" y="${(520-hh-70).toFixed(0)}" width="6" height="70" fill="${fill}" opacity="${op}"/>`}
       x+=w+4+rnd()*10}return s};
   h+=layer('url(#bld2)',.8,1.15)+layer('url(#bld)',.75,.8);
-  $('#skyline').setAttribute('viewBox',`0 0 ${SW} 520`);$('#skyline').setAttribute('preserveAspectRatio','none');$('#skyline').innerHTML=h;
+  $('#skyline').setAttribute('preserveAspectRatio','none');$('#skyline').innerHTML=h;
 })();
 (function grid(){ // พื้นกริดแบบภาพนิ่ง (เบากว่า CSS 3D + mask)
   const g=$('#grid'),Hh=PORT?560:380,cx=SW/2,vy=-Hh*1.35;let s=`<defs><linearGradient id="gridF" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${Hh}"><stop offset="0" stop-color="#605CAA" stop-opacity="0"/><stop offset=".75" stop-color="#605CAA" stop-opacity=".38"/><stop offset="1" stop-color="#605CAA" stop-opacity=".38"/></linearGradient></defs><g stroke="url(#gridF)" stroke-width="2" fill="none">`;
-  const step=PORT?150:180,n=Math.ceil(SW*1.6/step);
+  const step=PORT?150:180,n=Math.ceil(SW*2.6/step);
   for(let i=-n;i<=n;i++){const bx=cx+i*step,tx=cx+(bx-cx)*(-vy)/(Hh-vy);s+=`<path d="M${tx.toFixed(1)} 0L${bx.toFixed(1)} ${Hh}"/>`}
-  for(let k=0;k<=34;k++){const y=Hh-Hh*(k/(k+2.2));s+=`<path d="M0 ${y.toFixed(1)}H${SW}"/>`}
-  g.setAttribute('viewBox',`0 0 ${SW} ${Hh}`);g.setAttribute('preserveAspectRatio','none');g.innerHTML=s+'</g>'})();
+  for(let k=0;k<=34;k++){const y=Hh-Hh*(k/(k+2.2));s+=`<path d="M${-SW*2} ${y.toFixed(1)}H${SW*3}"/>`}
+  g.setAttribute('preserveAspectRatio','none');g.innerHTML=s+'</g>'})();
+fit();
 const FC=PORT?[[16,290,1],[972,300,.8],[975,1010,.75],[10,1590,.7],[962,1610,.6],[24,880,.5]]:[[60,80,1],[1770,70,.85],[1810,330,.75],[30,620,.7],[1530,30,.55],[300,24,.5]];
 $('#fcoins').innerHTML=FC.map((c,i)=>`<svg class="fcoin" id="fc${i}" style="left:${c[0]}px;top:${c[1]}px;transform:scale(${c[2]})" viewBox="0 0 100 100"><use href="#coin"/></svg>`).join('');
 
