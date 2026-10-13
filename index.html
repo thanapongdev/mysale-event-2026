@@ -232,6 +232,10 @@ body.portrait #stage,body.portrait #tpw{width:1080px;height:1920px}
 .portrait #qrGlow{left:40px;top:460px}
 .portrait #qrCard{left:190px;top:510px}
 body.idle{cursor:none}
+/* ---- โหมดเบา (iPhone/iPad): Safari มือถือจำกัดหน่วยความจำ GPU ถ้ามีเลเยอร์/เงาที่ขยับทุกเฟรมเยอะ
+   จะเด้ง "เกิดปัญหาซ้ำๆ" — ปิด will-change และเงา drop-shadow ของชิ้นที่ขยับ ---- */
+.lite *{will-change:auto!important}
+.lite .fcoin,.lite .coin,.lite .tkf>svg,.lite #s2logo svg,.lite #printer,.lite #s3L svg,.lite #s3R svg{filter:none!important}
 </style>
 </head>
 <body>
@@ -2911,6 +2915,10 @@ const autoPort=()=>innerHeight>innerWidth*1.05;
 const PORT=ORI==='portrait'||(ORI==='auto'&&autoPort());
 const SW=PORT?1080:1920,SH=PORT?1920:1080;
 document.body.classList.toggle('portrait',PORT);
+/* โหมดเบา: เปิดเองบน iPhone/iPad · บังคับได้ด้วย ?lite=1 หรือปิดด้วย ?lite=0 */
+const LITE=QS.has('lite')?QS.get('lite')!=='0':/iP(hone|ad|od)/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+document.body.classList.toggle('lite',LITE);
+if(LITE)gsap.defaults({force3D:false}); // ไม่สร้างเลเยอร์ GPU แยกให้ทุกชิ้นที่ขยับ
 /* ---------- fit to window ---------- */
 function fit(){const W=innerWidth,H=innerHeight,s=Math.min(W/SW,H/SH);
   const cw=W/s,ch=H/s,ox=(cw-SW)/2,oy=(ch-SH)/2; // ขนาดผืนพื้นหลัง (หน่วยเดียวกับเนื้อหา) และระยะเยื้องของเนื้อหา
