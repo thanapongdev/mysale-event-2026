@@ -128,7 +128,27 @@ svg{overflow:visible}
 
 #ctrl .sep{width:1px;height:18px;background:rgba(255,255,255,.25);margin:0 4px}
 #ctrl #bRec.on{background:#E05A8C}
-body.recording #ctrl,body.recording #toast,body.recording #recDlg{display:none!important}
+body.recording #ctrl,body.recording #toast,body.recording #recDlg,body.recording #setDlg{display:none!important}
+/* หน้าต่างตั้งค่า (ปุ่ม ⚙) */
+#setDlg{position:fixed;inset:0;z-index:1002;background:rgba(31,42,68,.45);display:none;place-items:center;font-family:'Kanit',sans-serif}
+#setDlg.on{display:grid}
+#setDlg .box{width:min(520px,92vw);max-height:90vh;overflow:auto;box-sizing:border-box;background:#F8FBFC;border-radius:18px;padding:22px 24px;color:#2D406F;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+#setDlg .box>b{font-size:19px;font-weight:600}
+#setDlg h5{margin:16px 0 6px;font-size:15px;font-weight:500}
+#setDlg .sgrid{display:grid;grid-template-columns:1fr 64px 64px;gap:2px 0;align-items:center;font-size:14px;font-weight:300}
+#setDlg .sgrid .hd{font-size:12px;font-weight:500;color:#6B7795;text-align:center}
+#setDlg .sgrid .hd:first-child{text-align:left}
+#setDlg .sgrid label{display:grid;place-items:center;height:30px;cursor:pointer}
+#setDlg input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#0362AF;cursor:pointer}
+#setDlg input[type=url]{width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #CFE0EF;border-radius:10px;font:14px 'Inter','Kanit',sans-serif;color:#1F2A44;background:#fff}
+#setDlg input[type=url]:focus{outline:2px solid #87C2E6;outline-offset:0}
+#setDlg .note{font-size:12px;font-weight:300;color:#6B7795;margin:6px 0 0;line-height:1.5}
+#setDlg .err{font-size:13px;color:#C7385F;min-height:18px;margin:8px 0 4px}
+#setDlg .bar{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+#setDlg button{all:unset;cursor:pointer;font-size:14px;padding:7px 16px;border-radius:999px;background:#E5EFF7}
+#setDlg button:focus-visible{outline:2px solid #87C2E6}
+#setDlg button.pri{background:#0362AF;color:#fff}
+#setDlg #setReset{margin-right:auto;background:none;color:#6B7795;padding-left:4px}
 #recDlg{position:fixed;inset:0;z-index:1002;background:rgba(31,42,68,.45);display:none;place-items:center;font-family:'Kanit',sans-serif}
 #recDlg.on{display:grid}
 #recDlg .box{width:min(460px,90vw);background:#F8FBFC;border-radius:18px;padding:22px 24px;color:#2D406F;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -579,6 +599,7 @@ window.MYSALE_CONFIG = {
  <button id="bNext" aria-label="ส่วนถัดไป" title="ส่วนถัดไป (→)"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
  <button id="bOri" aria-label="สลับแนวจอ" title="สลับแนวตั้ง/แนวนอน"><svg viewBox="0 0 24 24"><path d="M7 2h7a2 2 0 0 1 2 2v6h-2V4H7v16h4v2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm6 12h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zm0 2v4h7v-4z"/></svg></button>
  <div id="secLabel" role="button" tabindex="0" aria-label="เลือกหน้า" title="เลือกหน้า (กดเลข 1–8)"></div>
+ <button id="bSet" aria-label="ตั้งค่า" title="ตั้งค่า: หน้าวนลูป / หน้าที่ซ่อน / ลิงก์ LINE OA"><svg viewBox="0 0 24 24"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg></button>
  <span class="sep"></span>
  <button id="bRec" aria-label="Export เป็น MP4" title="Export เป็นวิดีโอ MP4"><svg viewBox="0 0 24 24"><path d="M12 3v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6V3zM5 19h14v2H5z"/></svg></button>
 </div>
@@ -591,6 +612,17 @@ window.MYSALE_CONFIG = {
  <li>เพื่อความคมชัด แนะนำให้กด <b>F11</b> เต็มจอก่อน และอย่าสลับแท็บหรือย่อหน้าต่างระหว่างบันทึก</li>
  <li>กด <b>Esc</b> เพื่อยกเลิกระหว่างบันทึก</li></ul>
  <div class="bar"><button id="recCancel">ยกเลิก</button><button class="pri" id="recGo">เริ่ม Export</button></div></div></div>
+<div id="setDlg" role="dialog" aria-modal="true" aria-labelledby="setT"><div class="box">
+ <b id="setT">ตั้งค่าการนำเสนอ</b>
+ <h5>หน้าที่แสดง / วนลูป</h5>
+ <div class="sgrid" id="setGrid"></div>
+ <p class="note">วนลูป = เมื่อกดหยุดค้างไว้ที่หน้านั้น จะเล่นหน้านั้นซ้ำไปเรื่อยๆ (หน้าอื่นเล่นจบแล้วค้าง)</p>
+ <h5>ลิงก์ LINE OA (สร้างเป็น QR Code หน้า 8)</h5>
+ <input type="url" id="setLine" placeholder="https://lin.ee/xxxx" spellcheck="false" autocomplete="off">
+ <p class="note">เว้นว่าง = ใช้ลิงก์/รูป QR ที่ตั้งไว้ในไฟล์</p>
+ <p class="note">ค่าที่บันทึกจะจำไว้ในเบราว์เซอร์นี้เท่านั้น — ถ้าจะเปิดบนเครื่องอื่นด้วยค่าเดียวกัน กด "คัดลอกลิงก์" แล้วเปิดลิงก์นั้นบนเครื่องนั้น</p>
+ <div class="err" id="setErr" role="alert"></div>
+ <div class="bar"><button id="setReset">คืนค่าเริ่มต้น</button><button id="setCopy">คัดลอกลิงก์</button><button id="setCancel">ยกเลิก</button><button class="pri" id="setSave">บันทึก</button></div></div></div>
 <script>/*!
  * GSAP 3.12.5
  * https://gsap.com
@@ -2935,7 +2967,15 @@ function reloadAt(sec,o){const u=new URL(location.href);if(o)u.searchParams.set(
 /* ---------- MyOrder logo: ใช้ไฟล์รูปในเครื่อง ----------
    ตั้งชื่อไฟล์ได้ที่ MYSALE_CONFIG.LOGO_FILE ด้านบนของไฟล์ ถ้าหาไฟล์ไม่เจอจะใช้โลโก้เวกเตอร์เดิมแทน
    หรือลากไฟล์รูปโลโก้มาวางบนหน้าจอเพื่อเปลี่ยนทันที */
-const CFG=Object.assign({LOOP_SECS:[4,5],HIDE_SECS:[],LOGO_FILE:'myorder-logo.png',LINE_QR_FILE:'line-qr.png'},window.MYSALE_CONFIG||{});
+/* ค่าที่ตั้งผ่านหน้าเว็บ (ปุ่มตั้งค่าที่แถบควบคุม) เก็บไว้ในเบราว์เซอร์ และทับค่าใน MYSALE_CONFIG
+   ลิงก์ที่มี ?loop=4,5&hide=3&line=https://... จะใช้ค่าจากลิงก์แทน (ใช้แชร์ค่าไปเครื่องอื่น) */
+const SET_KEY='mysale.settings';
+const SAVED=(()=>{try{return JSON.parse(localStorage.getItem(SET_KEY))||{}}catch(e){return {}}})();
+const numList=v=>String(v).split(',').map(Number).filter(n=>n>=1);
+if(QS.has('loop'))SAVED.LOOP_SECS=numList(QS.get('loop'));
+if(QS.has('hide'))SAVED.HIDE_SECS=numList(QS.get('hide'));
+if(QS.has('line'))SAVED.LINE_URL=QS.get('line');
+const CFG=Object.assign({LOOP_SECS:[4,5],HIDE_SECS:[],LOGO_FILE:'myorder-logo.png',LINE_QR_FILE:'line-qr.png'},window.MYSALE_CONFIG||{},SAVED);
 const LOGO_FILE=CFG.LOGO_FILE;
 function setLogo(src){
   const sym=document.getElementById('mo');
@@ -3192,7 +3232,7 @@ window.__TX={TX,get:TXget};
 /* ---------- QR Code LINE OA (หน้า 8) ----------
    ลำดับการใช้: 1) ไฟล์รูป CFG.LINE_QR_FILE ถ้ามีในโฟลเดอร์  2) สร้าง QR จากลิงก์ s8.qr_url  3) กรอบว่างบอกวิธีใส่ */
 (function(){
-  const H=$('#qrHolder'),url=(TX['s8.qr_url']||'').trim();
+  const H=$('#qrHolder'),own=(CFG.LINE_URL||'').trim(),url=own||(TX['s8.qr_url']||'').trim(); // own = ลิงก์ที่ตั้งผ่านหน้าเว็บ
   function fromUrl(){
     if(!url||typeof qrcode!=='function'){H.innerHTML=`<div class="qrEmpty"><div>ใส่ลิงก์ LINE OA ที่ "s8.qr_url"<br>หรือวางไฟล์รูป QR ชื่อ<br><b>${esc(CFG.LINE_QR_FILE||'line-qr.png')}</b><br>ไว้โฟลเดอร์เดียวกับไฟล์นี้</div></div>`;return}
     const q=qrcode(0,'M');q.addData(url,'Byte');q.make();
@@ -3200,7 +3240,7 @@ window.__TX={TX,get:TXget};
     for(let r=0;r<n;r++){let c=0;while(c<n){if(q.isDark(r,c)){let s=c;while(c<n&&q.isDark(r,c))c++;p+=`M${s} ${r}h${c-s}v1h-${c-s}z`}else c++}}
     H.innerHTML=`<svg class="qr" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${p}" fill="#1F2A44"/></svg>`}
   fromUrl();
-  if(CFG.LINE_QR_FILE){const im=new Image();im.onload=()=>{H.innerHTML='';im.className='qr';im.alt='QR Code LINE OA';H.appendChild(im)};
+  if(CFG.LINE_QR_FILE&&!own){const im=new Image();im.onload=()=>{H.innerHTML='';im.className='qr';im.alt='QR Code LINE OA';H.appendChild(im)};
     im.src=CFG.LINE_QR_FILE+'?v='+Date.now()}
 })();
 
@@ -3594,9 +3634,44 @@ $('#bPlay').onclick=e=>{e.stopPropagation();toggle()};
 $('#bPrev').onclick=e=>{e.stopPropagation();prev()};
 $('#bNext').onclick=e=>{e.stopPropagation();next()};
 $('#bRec').onclick=e=>{e.stopPropagation();startRec()};
+/* ---------- หน้าต่างตั้งค่า: หน้าวนลูป / หน้าที่ซ่อน / ลิงก์ LINE OA ---------- */
+$('#setGrid').innerHTML='<div class="hd">หน้า</div><div class="hd">แสดง</div><div class="hd">วนลูป</div>'+
+  SECS.map((s,i)=>`<div>${i+1}. ${esc(s[1])}</div><label><input type="checkbox" class="sShow" data-i="${i}" aria-label="แสดงหน้า ${i+1}"></label><label><input type="checkbox" class="sLoop" data-i="${i}" aria-label="วนลูปหน้า ${i+1}"></label>`).join('');
+function openSet(){
+  $$('#setDlg .sShow').forEach(c=>c.checked=shown(+c.dataset.i));
+  $$('#setDlg .sLoop').forEach(c=>c.checked=LOOP_SECS.includes(+c.dataset.i+1));
+  $('#setLine').value=CFG.LINE_URL||'';$('#setErr').textContent='';
+  if(!held)toggle(); // หยุดไว้ระหว่างตั้งค่า
+  $('#setDlg').classList.add('on');$('#setSave').focus()}
+function closeSet(){$('#setDlg').classList.remove('on');$('#bSet').focus()}
+function readSet(){
+  const hide=$$('#setDlg .sShow').filter(c=>!c.checked).map(c=>+c.dataset.i+1);
+  const loop=$$('#setDlg .sLoop').filter(c=>c.checked).map(c=>+c.dataset.i+1);
+  const line=$('#setLine').value.trim();
+  if(hide.length>LAST){$('#setErr').textContent='ต้องแสดงอย่างน้อย 1 หน้า';return null}
+  if(line&&!/^https?:\/\/\S+$/i.test(line)){$('#setErr').textContent='ลิงก์ LINE OA ต้องขึ้นต้นด้วย https://';return null}
+  return {LOOP_SECS:loop,HIDE_SECS:hide,LINE_URL:line}}
+// โหลดหน้าใหม่ให้ค่าที่ตั้งมีผล (ตัด ?loop/&hide/&line ออก เพื่อให้ใช้ค่าที่บันทึกในเบราว์เซอร์)
+function reloadSettings(){const u=new URL(location.href),before=u.search;['loop','hide','line'].forEach(k=>u.searchParams.delete(k));
+  u.hash='p'+(cs()+1);location.replace(u.toString());if(u.search===before)location.reload()}
+$('#bSet').onclick=e=>{e.stopPropagation();openSet()};
+$('#setCancel').onclick=closeSet;
+$('#setDlg').onclick=e=>{if(e.target.id==='setDlg')closeSet()};
+$('#setSave').onclick=()=>{const v=readSet();if(!v)return;
+  try{localStorage.setItem(SET_KEY,JSON.stringify(v))}catch(e){$('#setErr').textContent='เบราว์เซอร์นี้บันทึกค่าไม่ได้ (เช่น โหมดไม่ระบุตัวตน) — ใช้ "คัดลอกลิงก์" แทน';return}
+  reloadSettings()};
+$('#setReset').onclick=()=>{try{localStorage.removeItem(SET_KEY)}catch(e){}reloadSettings()};
+$('#setCopy').onclick=async()=>{const v=readSet();if(!v)return;
+  const u=new URL(location.href);u.hash='';
+  u.searchParams.set('loop',v.LOOP_SECS.join(','));u.searchParams.set('hide',v.HIDE_SECS.join(','));
+  if(v.LINE_URL)u.searchParams.set('line',v.LINE_URL);else u.searchParams.delete('line');
+  const link=u.toString();
+  try{await navigator.clipboard.writeText(link);toast('คัดลอกลิงก์แล้ว — เปิดลิงก์นี้บนเครื่องอื่นเพื่อใช้ค่าเดียวกัน')}
+  catch(e){prompt('คัดลอกลิงก์นี้:',link)}};
 addEventListener('keydown',e=>{
   if(rec){if(e.key==='Escape'){rec.cancel=true;stopRec()}return}
   if($('#recDlg').classList.contains('on')){if(e.key==='Escape')$('#recDlg').classList.remove('on');return}
+  if($('#setDlg').classList.contains('on')){if(e.key==='Escape')closeSet();return}
   if(e.code==='Space'){e.preventDefault();toggle()}
   else if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();next()}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
